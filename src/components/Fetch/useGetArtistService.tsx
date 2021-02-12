@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
 import { Service } from "../../types/Service";
-import { Data } from "../../types/Data";
+import {  SearchResponse, Song } from "../../types/types";
 import Artist from "./Artist"
 
-export interface Datas {
-  data: Data[];
+export interface ServiceState {
+  status:string;
+  data: Song[];
+  error?:Error
 }
+
+
 const useGetArtistService = () => {
-  const [data, setData] = useState<Service<Datas>>({
+  const [data, setData] = useState<ServiceState>({
     status: "loading",
+    data:[]
   });
+  const [query,setQuery] = useState("Rihanna")
   useEffect(() => {
-    fetch("https://deezerdevs-deezer.p.rapidapi.com/search?q=eminem", {
+    fetch("https://deezerdevs-deezer.p.rapidapi.com/search?q=" + query, {
       method: "GET",
       headers: {
         "x-rapidapi-key": "af41582910msh71bc72ea9534f3cp19e1b8jsnbe395ac299a8",
@@ -19,8 +25,8 @@ const useGetArtistService = () => {
       },
     })
       .then((response) => response.json())
-      .then((response) => setData({ status: "loaded", payload: response }))
-      .catch((error) => setData({ status: "error", error }));
+      .then(({data}:SearchResponse) => setData({status:"loaded",data}) )
+      .catch((error) => setData({ status: "error", error,data:[] }));
   }, []);
   return data
 };

@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ArtistCards() {
+export default function ArtistCards({artist}:any) {
   const classes = useStyles();
 
   return (
